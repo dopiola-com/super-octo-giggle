@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SignClient</title>
+</head>
+<body>
+    <style type="text/css">
+        textarea {
+            width: 99%;
+        }
+        h5 {
+            margin-bottom: 1px;
+        }
+        .container {
+            margin: 0px auto;
+            width: 960px;
+            position: absolute;
+            left: 10px;
+        }
+        #divParams div div {
+            margin-left: 20px;
+            color:#969696;
+        }
+    </style>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/ccp.min.js"></script>
+    <script src="functions.js"></script>
+    <script type="text/javascript">
+        getOsName((os) => {
+            if (os.toLowerCase().includes("windows")) {
+                doUpdateURL="https://mackmucha.krakow.comarch//win/pekao.ccp"
+                doUpdateNote="<br>https://mackmucha.krakow.comarch//win/pekao.ccp<br>https://www.pekaobiznes24.pl/components/CCP/pekao.ccp<br>https://nbkmucha.krakow.comarch/win/pekao.ccp"
+            } else if (os.toLowerCase().includes("macos")) {
+                doUpdateURL="https://mackmucha.krakow.comarch//mac/pekao.ccp"
+                doUpdateNote="<br>https://mackmucha.krakow.comarch//mac/pekao.ccp<br>https://www.pekaobiznes24.pl/components/CCP_Mac/pekao.ccp<br>https://nbkmucha.krakow.comarch/mac/pekao.ccp"
+            } else if (os.toLowerCase().includes("linux")) {
+                doUpdateURL="https://mackmucha.krakow.comarch//linux/pekao.ccp"
+                doUpdateNote="<br>https://mackmucha.krakow.comarch//linux/pekao.ccp<br>https://www.pekaobiznes24.pl/components/CCP_Linux/pekao.ccp<br>https://www.pekaobiznes24.pl/components/CCP_Linux64/pekao.ccp<br>https://nbkmucha.krakow.comarch/lin/pekao.ccp"
+            } else {
+                doUpdateURL=""
+                doUpdateNote=""
+            }
+        });
+        //CCP FUNCTIONS
+        var CCPFunctions = [
+            {name:"verifyCCPConfiguration", params:[
+                                            {name:"minSupportedServerVersion", sampleValue:'{"ver_win32":"2.3.0.0","ver_lin32":"2.3.0.0","ver_lin64":"2.3.0.0","ver_osx64":"2.3.0.0"}', note:'function parameter is object or string with version - JSON is using only for tests! <br> You can use one string with version, example: "2.3.0.0"'},
+                                            {name:"minSupportedModuleVersion", sampleValue:'{"ver_win32":"1.1.0.0","ver_lin32":"1.1.0.0","ver_lin64":"1.1.0.0","ver_osx64":"1.1.0.0"}', note:'function parameter is object or string with version - JSON is using only for tests! <br> You can use one string with version, example: "1.1.0.0"'},
+                                            {name:"fileUrl", sampleValue:'{"url_win32":"https://mackmucha.krakow.comarch//win/pekao.ccp","url_lin32":"https://mackmucha.krakow.comarch//linux32/pekao.ccp","url_lin64":"https://mackmucha.krakow.comarch//linux64/pekao.ccp","url_osx64":"https://mackmucha.krakow.comarch//mac/pekao.ccp"}', note:"function parameter is object or string with URL - JSON is using only for tests! <br> You can use one string with URL like at prevoius versions, example: file:///C:\\Users\\Comarch\\Desktop\\epuap.ccp, (http://..., https://...)"},
+                                            {name:"destFileName", sampleValue:"undefined", note:"unused in this project"}
+                                        ]},
+            {name:"isBrowserSupported"},
+            {name:"isCCPInstalledAndSupported", params:[
+                                            {name:"minSupportedVersion", sampleValue:"2.3.0.0"}
+                                        ]},
+            {name:"getServerVersion"},
+            {name:"getModuleVersion"},
+            {name:"getArchType"},
+            {name:"doUpdate", params:[
+                                            {name:"fileUrl", sampleValue:doUpdateURL, note: doUpdateNote},
+                                            {name:"destFileName", sampleValue:"undefined", note:"unused in this project"}
+                                        ]},
+            {name:"setLanguage", params:[
+                                            {name:"languageId", note:"0 - polish; 1 - english; 2 - german;"}
+                                        ]},
+            {name:"setKey", params:[
+                                            {name:"szKeyId", sampleValue:"1"},
+                                            {name:"szKeyName", sampleValue:"74657374", note: 'hex from "test" is 74657374'},
+                                            {name:"szKeyValue", sampleValue:"C121C66CE427779B902B899B99F8A7520D963BF7"},
+                                            {name:"szKeyLocation", sampleValue:"1", note:"1 - dysk, 2 - karta / token USB, 3 - cert. kwalifikowany, 20 - tPro ECC"}
+                                        ]},
+            {name:"generateKey", params:[
+                                            {name:"minLength", sampleValue:"|4|"}
+                                        ]},
+            {name:"generateNewRequest", params:[
+                                            {name:"commonName", sampleValue:"436962204369622033"}
+                                        ]},
+            {name:"sign", params:[
+                                            {name:"szKeysID", sampleValue:"||"},
+                                            {name:"szDefKeyID", sampleValue:""},
+                                            {name:"szText", sampleValue:"5f5a4c4543454e49455f7c73676e5f74726e5f6163635f6e6f3a52616368756e656b207a6c6563656e696f64617763793a35383137353031313532303030303030303031313934303237377c73676e5f74726e5f626e665f6163635f6e6f3a52616368756e656b206f6462696f7263793a36313130393032353136303030303030303633323031383134327c73676e5f74726e5f6f726465725f7365713a4964656e747966696b61746f723a3230313430313230313136323539527c73676e5f74726e5f616d6f756e743a4b776f7461207a6c6563656e69613a3132333132337c73676e5f74726e5f63757272656e63793a57616c7574613a504c4e7c73676e5f74726e5f646174653a44617461207a6c6563656e69613a32302e30312e323031347c5f5a4c4543454e49455f7c73676e5f74726e5f6163635f6e6f3a52616368756e656b207a6c6563656e696f64617763793a31323334353031313532303030303030303031313934303237377c73676e5f74726e5f626e665f6163635f6e6f3a52616368756e656b206f6462696f7263793a31323334393032353136303030303030303633323031383134327c73676e5f74726e5f6f726465725f7365713a4964656e747966696b61746f723a3132333430313230313136323539527c73676e5f74726e5f616d6f756e743a4b776f7461207a6c6563656e69613a31323334313233347c73676e5f74726e5f63757272656e63793a57616c7574613a53454b7c73676e5f74726e5f646174653a44617461207a6c6563656e69613a32312e30312e323031347c"},
+                                            {name:"szUseSMSCode", sampleValue:"0", note:"Possible values: 0 or 1"}
+                                        ]},
+            {name:"changePin"},
+            {name:"changePuk"},
+            {name:"initializeCard"},
+            {name:"registerCert"},
+            {name:"unblockCard"},
+            {name:"beginSession", params:[
+                                            {name:"ssn_id", sampleValue:"154333217"},
+                                            {name:"logging_type", sampleValue:"1"},
+                                            {name:"sms_code_no", sampleValue:"9"}
+                                        ]}
+        ];
+
+        window.onload = function() {
+            $("#hiddenAutoTestOptions").hide();
+            var selectFunction = document.getElementById("selectFunction");
+            var divParams = document.getElementById("divParams");
+            divParams.innerHTML += '<div id="noneParams">--</div>\n';
+            var i;
+            for(i=0; i<CCPFunctions.length; i++)
+            {
+                var opt = document.createElement('OPTION');
+                opt.text = CCPFunctions[i].name;
+                opt.id = "function" + CCPFunctions[i].name.capitalizeFistLetter();
+                selectFunction.options.add(opt);
+                if(CCPFunctions[i].params != undefined)
+                {
+                    var CCPFunctionName = CCPFunctions[i].name;
+                    var params = CCPFunctions[i].params;
+                    var paramsHTML = "";
+                    var j;
+                    for(j=0; j<params.length; j++)
+                    {
+                        var textareaId = "textarea" + CCPFunctionName.capitalizeFistLetter() + params[j].name.capitalizeFistLetter();
+                        paramsHTML += "<div>\n"
+                            + params[j].name + ":\n"
+                            + "<textarea id=\""+ textareaId + "\" ></textarea>\n";
+                        if(params[j].note != undefined)
+                        {
+                            paramsHTML += "<div>NOTE: " + params[j].note + "</div>\n";
+                        }
+                        paramsHTML += "</div>\n";
+                        divParams.innerHTML += paramsHTML;
+                        $("#" + textareaId).text(params[j].sampleValue);
+                    }
+                }
+            }
+            document.getElementById("btnShowAutoTestsOptions").focus();
+            document.getElementById("textareaTestResultWriterDllPath").value = currentUrlTestResultWriterDllPath();
+            $("textarea").focus(function() {
+                this.select();
+            });
+            $("#selectFunction").trigger("change");
+            $("#selectFunction").focus(function() {
+                $("#selectFunction").val("");
+                $("#selectFunction").trigger("change");
+            });
+        }
+        $(function() {
+            //AUTO TESTS
+            $("#btnShowAutoTestsOptions").click(function() {
+                $("#hiddenAutoTestOptions").show();
+            });
+
+            $("#btnDownloadTestResultWriterDll").click(function(){
+                CCPPekaoInstance.doUpdate($('textarea#textareaTestResultWriterDllPath').val(), 'dlls/testResultWriter.dll', funCallbackTest);
+            });
+
+            $("#btnExecute").click(function(){
+                var selectedFunctionID = $("#selectFunction option:selected").attr("id");
+                var i;
+                for(i=0; i<CCPFunctions.length; i++)
+                {
+                    var CCPFunctionId = "function" + CCPFunctions[i].name.capitalizeFistLetter();
+                    if(selectedFunctionID == CCPFunctionId)
+                    {
+                        var functionCall = "CCPPekaoInstance." + CCPFunctions[i].name + "(";
+                        if(CCPFunctions[i].params != undefined && CCPFunctions[i].params.length>0)
+                        {
+                            var j;
+                            for(j=0; j<CCPFunctions[i].params.length; j++)
+                            {
+                                var paramTextareaId = "textarea" + CCPFunctions[i].name.capitalizeFistLetter() + CCPFunctions[i].params[j].name.capitalizeFistLetter();
+                                if(CCPFunctions[i].name == "doUpdate")
+                                {
+                                    var parsedArg = "$('textarea#" + paramTextareaId + "').val()";
+                                    var checkParse = "JSON.parse($('textarea#" + paramTextareaId + "').val())";
+                                    try
+                                    {
+                                        eval(checkParse);
+                                        parsedArg = checkParse;
+                                        console.log(CCPFunctions[i].params[j].name + ": JS Object as parameter - new version of doUpdate mathod");
+                                    }
+                                    catch(execption)
+                                    {
+                                        console.log(CCPFunctions[i].params[j].name + ": string as parameter - old version of doUpdate mathod");
+                                    }
+                                    functionCall += parsedArg + ", ";
+                                }
+                                else if(CCPFunctions[i].name == "verifyCCPConfiguration")
+                                {
+                                    var parsedArg = "$('textarea#" + paramTextareaId + "').val()";
+                                    var checkParse = "JSON.parse($('textarea#" + paramTextareaId + "').val())";
+                                    try
+                                    {
+                                        eval(checkParse);
+                                        parsedArg = checkParse;
+                                        console.log(CCPFunctions[i].params[j].name + ": JS Object as parameter - new version of doUpdate mathod");
+                                    }
+                                    catch(execption)
+                                    {
+                                        console.log(CCPFunctions[i].params[j].name + ": string as parameter - old version of doUpdate mathod");
+                                    }
+                                    functionCall += parsedArg + ", ";
+                                }
+                                else
+                                {
+                                    functionCall += "$('textarea#" + paramTextareaId + "').val(), ";
+                                }
+                            }
+                        }
+                        var CCPResponseFilePath = $('textarea#textareaWithCCPResponseFilePath').val();
+                        if(CCPResponseFilePath == "")//manual tests - sets sessions params
+                        {
+                            if(CCPFunctions[i].name == "generateKey")
+                            {
+                                functionCall += "funGenKeyCallbackTest);"
+                            }
+                            else if(CCPFunctions[i].name == "setKey")
+                            {
+                                functionCall += "function(result){funSetKeyCallbackTest(result, $('textarea#textareaSetKeySzKeyId').val());});"
+                            }
+                            else
+                            {
+                                functionCall += "funCallbackTest);";
+                            }
+                        }
+                        else
+                        {
+                            functionCall += "funCallbackTest);";
+                        }
+                        console.log("Calling: " + functionCall + "\n");
+                        eval(functionCall);
+                    }
+                }
+                $("#textareaWithCCPResponseFilePath").focus();
+            });
+
+            $("#selectFunction").on('change', function() {
+                $("#divParams").children().hide();
+
+                var selectedFunctionID = $("#selectFunction option:selected").attr("id");
+                var i;
+                for(i=0; i<CCPFunctions.length; i++)
+                {
+                    var CCPFunctionId = "function" + CCPFunctions[i].name.capitalizeFistLetter();
+                    if(selectedFunctionID == CCPFunctionId)
+                    {
+                        if(CCPFunctions[i].params != undefined && CCPFunctions[i].params.length>0)
+                        {
+                            var j;
+                            for(j=0; j<CCPFunctions[i].params.length; j++)
+                            {
+                                var paramTextareaId = "textarea" + CCPFunctions[i].name.capitalizeFistLetter() + CCPFunctions[i].params[j].name.capitalizeFistLetter();
+                                $("#" + paramTextareaId).parent().show();
+                            }
+                        }
+                        else
+                        {
+                            $("#noneParams").show();
+                        }
+                    }
+                }
+            });
+
+            $("#btnAlert").click(function(){
+                alert("Alert!");
+            });
+        });
+    </script>
+<div class="container">
+    <button type="button" id="btnShowAutoTestsOptions" >Show auto tests options</button>
+    <div id="hiddenAutoTestOptions" >
+        <h5>SETTINGS FOR AUTOMATION TESTS</h5>
+        <table>
+            <tr>
+                <td style="width:25%">
+                    <button type="button" id="btnDownloadTestResultWriterDll" >Download TestResultWriterDll</button>
+                </td>
+                <td style="width:75%">
+                    <textarea id="textareaTestResultWriterDllPath" ></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    CCPResponseFilePath:
+                </td>
+                <td>
+                    <textarea id="textareaWithCCPResponseFilePath" ></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h5>FUNCTION:</h5>
+    <select id="selectFunction"></select>
+
+    <h5>PARAMS:</h5>
+    <div id="divParams" ></div>
+    <br>
+    <button type="button" id="btnExecute" >Execute</button>
+
+    <h5>RESULTS:</h5>
+    <textarea id="textareaResult" rows="10" ></textarea></br>
+    <button type="clear" onClick="clearDebug()">Clear</button>
+
+    <h5>ADDITIONAL</h5>
+    <table>
+        <tr>
+            <td>
+                <button type="button" id="btnAlert" >Alert</button>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr><td>wersja 4.2.5.0</a></td></tr>
+        <tr>
+            <td>Windows  </td>
+            <td><a href="modules/win/pekao.ccp">pekao.ccp</a></td>
+            <td><a href="modules/win/pekao.b64">pekao.b64</a></td>
+        </tr>
+        <tr>
+            <td>MacOS    </td>
+            <td><a href="modules/mac/pekao.ccp">pekao.ccp</a></td>
+            <td><a href="modules/mac/pekao.b64">pekao.b64</a></td>
+        </tr>
+        <tr>
+            <td>Linux    </td>
+            <td><a href="modules/linux/pekao.ccp">pekao.ccp</a></td>
+            <td><a href="modules/linux/pekao.b64">pekao.b64</a>
+        </tr>
+        <tr>
+            <td><a href="pekaoJS-4.2.5.0.zip">JS API</a></td>
+        </tr>
+  </table>
+</div>
+</body>
+</html>
