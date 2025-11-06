@@ -458,7 +458,7 @@ function getOsName(callBackFunction) {
 // Connection test callback functions
 function funConnectionTestCallback(result) {
     if(debugTextAreaName != null) {
-        var output = "=== CONNECTION TEST RESULT ===\n";
+        var output = "=== DUAL CONNECTION TEST RESULT ===\n";
         output += "Status: " + result.status + "\n";
         output += "Code: " + result.code + "\n";
         output += "Message: " + result.message + "\n";
@@ -472,11 +472,14 @@ function funConnectionTestCallback(result) {
             output += "Reasoning: " + result.reasoning + "\n";
         }
         
-        if (result.indicators) {
-            output += "\nDetailed Indicators:\n";
-            for (var key in result.indicators) {
-                output += "  " + key + ": " + result.indicators[key] + "\n";
-            }
+        if (result.testResults) {
+            output += "\nTest Details:\n";
+            output += "  Quick Test (100ms timeout): " + 
+                     (result.testResults.quick.success ? "SUCCESS" : "FAILED") + 
+                     " in " + result.testResults.quick.duration + "ms\n";
+            output += "  Normal Test (3000ms timeout): " + 
+                     (result.testResults.normal.success ? "SUCCESS" : "FAILED") + 
+                     " in " + result.testResults.normal.duration + "ms\n";
         }
         
         output += "\nFull Result Object:\n";
