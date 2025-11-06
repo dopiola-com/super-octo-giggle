@@ -454,3 +454,55 @@ function getOsName(callBackFunction) {
     }
     callBackFunction("unknown");
 };
+
+// Connection test callback functions
+function funConnectionTestCallback(result) {
+    if(debugTextAreaName != null) {
+        var output = "=== CONNECTION TEST RESULT ===\n";
+        output += "Status: " + result.status + "\n";
+        output += "Code: " + result.code + "\n";
+        output += "Message: " + result.message + "\n";
+        output += "Duration: " + result.duration + "ms\n";
+        
+        if (result.solution) {
+            output += "Solution: " + result.solution + "\n";
+        }
+        
+        if (result.reasoning) {
+            output += "Reasoning: " + result.reasoning + "\n";
+        }
+        
+        if (result.indicators) {
+            output += "\nDetailed Indicators:\n";
+            for (var key in result.indicators) {
+                output += "  " + key + ": " + result.indicators[key] + "\n";
+            }
+        }
+        
+        output += "\nFull Result Object:\n";
+        output += JSON.stringify(result, null, 2);
+        
+        debugResult(output);
+    }
+}
+
+function funPrivateNetworkCallback(result) {
+    if(debugTextAreaName != null) {
+        var output = "=== PRIVATE NETWORK ACCESS CHECK ===\n";
+        output += "Requires PNA: " + result.requiresPNA + "\n";
+        
+        if (result.requiresPNA) {
+            output += "Current Domain: " + result.currentDomain + "\n";
+            output += "Target Domain: " + result.targetDomain + "\n";
+            output += "Chrome Flags: " + result.chromeFlags + "\n";
+            output += "Status: Private Network Access may be required\n";
+        } else {
+            output += "Status: Private Network Access not required (localhost or HTTP)\n";
+        }
+        
+        output += "\nFull Result Object:\n";
+        output += JSON.stringify(result, null, 2);
+        
+        debugResult(output);
+    }
+}

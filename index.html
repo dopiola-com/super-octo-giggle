@@ -215,6 +215,14 @@
                             {
                                 functionCall += "function(result){funSetKeyCallbackTest(result, $('textarea#textareaSetKeySzKeyId').val());});"
                             }
+                            else if(CCPFunctions[i].name == "testConnectionStatus")
+                            {
+                                functionCall += "function(result) { funConnectionTestCallback(result); });";
+                            }
+                            else if(CCPFunctions[i].name == "checkPrivateNetworkAccess")
+                            {
+                                functionCall = "funPrivateNetworkCallback(CCPPekaoInstance.checkPrivateNetworkAccess());";
+                            }
                             else
                             {
                                 functionCall += "funCallbackTest);";
@@ -261,79 +269,6 @@
             $("#btnAlert").click(function(){
                 alert("Alert!");
             });
-
-            // Connection Test Buttons
-            $("#btnQuickConnectionTest").click(function(){
-                $("#textareaConnectionTestResult").val("Testing connection...\n");
-                console.log("Quick Connection Test started");
-                
-                ccp_quickConnectionTest(function(result) {
-                    var output = "=== QUICK CONNECTION TEST RESULT ===\n";
-                    output += "Status: " + result.status + "\n";
-                    output += "Code: " + result.code + "\n";
-                    output += "Message: " + result.message + "\n";
-                    output += "Duration: " + result.duration + "ms\n";
-                    
-                    if (result.solution) {
-                        output += "Solution: " + result.solution + "\n";
-                    }
-                    
-                    if (result.reasoning) {
-                        output += "Reasoning: " + result.reasoning + "\n";
-                    }
-                    
-                    if (result.indicators) {
-                        output += "\nDetailed Indicators:\n";
-                        for (var key in result.indicators) {
-                            output += "  " + key + ": " + result.indicators[key] + "\n";
-                        }
-                    }
-                    
-                    output += "\nFull Result Object:\n";
-                    output += JSON.stringify(result, null, 2);
-                    
-                    $("#textareaConnectionTestResult").val(output);
-                    console.log("Quick Connection Test completed:", result);
-                });
-            });
-
-            $("#btnAdvancedConnectionTest").click(function(){
-                $("#textareaConnectionTestResult").val("Running advanced connection test...\n");
-                console.log("Advanced Connection Test started");
-                
-                ccp_advancedConnectionTest(function(result) {
-                    var output = "=== ADVANCED CONNECTION TEST RESULT ===\n";
-                    output += "Status: " + result.status + "\n";
-                    output += "Code: " + result.code + "\n";
-                    output += "Message: " + result.message + "\n";
-                    output += "Duration: " + result.duration + "ms\n";
-                    output += "Method: " + result.method + "\n";
-                    
-                    if (result.solution) {
-                        output += "Solution: " + result.solution + "\n";
-                    }
-                    
-                    if (result.confidence) {
-                        output += "Confidence: " + result.confidence + "\n";
-                    }
-                    
-                    if (result.details) {
-                        output += "\nDetailed Error Analysis:\n";
-                        output += "  ReadyState: " + result.details.readyState + "\n";
-                        output += "  Status: " + result.details.status + "\n";
-                        output += "  StatusText: " + result.details.statusText + "\n";
-                        output += "  ResponseText: " + (result.details.responseText ? "Present" : "Empty") + "\n";
-                        output += "  Headers: " + (result.details.headers ? "Present" : "Empty") + "\n";
-                        output += "  ErrorThrown: " + result.details.errorThrown + "\n";
-                    }
-                    
-                    output += "\nFull Result Object:\n";
-                    output += JSON.stringify(result, null, 2);
-                    
-                    $("#textareaConnectionTestResult").val(output);
-                    console.log("Advanced Connection Test completed:", result);
-                });
-            });
         });
     </script>
 <div class="container">
@@ -371,23 +306,6 @@
     <h5>RESULTS:</h5>
     <textarea id="textareaResult" rows="10" ></textarea></br>
     <button type="clear" onClick="clearDebug()">Clear</button>
-
-    <h5>CONNECTION TESTS</h5>
-    <table>
-        <tr>
-            <td>
-                <button type="button" id="btnQuickConnectionTest" >Quick Connection Test</button>
-            </td>
-            <td>
-                <button type="button" id="btnAdvancedConnectionTest" >Advanced Connection Test</button>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <textarea id="textareaConnectionTestResult" rows="8" style="width: 100%; font-family: monospace;"></textarea>
-            </td>
-        </tr>
-    </table>
 
     <h5>ADDITIONAL</h5>
     <table>
