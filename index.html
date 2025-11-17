@@ -92,9 +92,7 @@
                                             {name:"logging_type", sampleValue:"1"},
                                             {name:"sms_code_no", sampleValue:"9"}
                                         ]},
-            {name:"testConnectionStatus"},
-            {name:"checkPrivateNetworkAccess"},
-            {name:"checkLocalNetworkPermission"}
+            {name:"testConnectionStatus"}
         ];
 
         window.onload = function() {
@@ -214,19 +212,11 @@
                             }
                             else if(CCPFunctions[i].name == "setKey")
                             {
-                                functionCall += "function(result){funSetKeyCallbackTest(result, $('textarea#textareaSetKeySzKeyId').val());});"
+                                functionCall += "function(result){funSetKeyCallbackTest(result, $('textarea#textareaSetKeySzKeyId').val());});" 
                             }
                             else if(CCPFunctions[i].name == "testConnectionStatus")
                             {
-                                functionCall += "function(result) { funConnectionTestCallback(result); });";
-                            }
-                            else if(CCPFunctions[i].name == "checkPrivateNetworkAccess")
-                            {
-                                functionCall = "funPrivateNetworkCallback(CCPPekaoInstance.checkPrivateNetworkAccess());";
-                            }
-                            else if(CCPFunctions[i].name == "checkLocalNetworkPermission")
-                            {
-                                functionCall = "ccp_checkLocalNetworkPermission(function(result) { funLocalNetworkPermissionCallback(result); });";
+                                functionCall += "funLocalNetworkPermissionCallback);";
                             }
                             else
                             {
