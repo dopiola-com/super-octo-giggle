@@ -458,7 +458,7 @@ function getOsName(callBackFunction) {
 // Connection test callback functions
 function funConnectionTestCallback(result) {
     if(debugTextAreaName != null) {
-        var output = "=== DUAL CONNECTION TEST RESULT ===\n";
+        var output = "=== COMPREHENSIVE CONNECTION TEST RESULT ===\n";
         output += "Status: " + result.status + "\n";
         output += "Code: " + result.code + "\n";
         output += "Message: " + result.message + "\n";
@@ -472,12 +472,25 @@ function funConnectionTestCallback(result) {
             output += "Reasoning: " + result.reasoning + "\n";
         }
         
+        if (result.permissionCheck) {
+            output += "\n--- Permission API Check ---\n";
+            output += "Supported: " + result.permissionCheck.supported + "\n";
+            if (result.permissionCheck.state) {
+                output += "State: " + result.permissionCheck.state + "\n";
+                output += "Message: " + result.permissionCheck.message + "\n";
+            } else if (result.permissionCheck.error) {
+                output += "Error: " + result.permissionCheck.details + "\n";
+            } else {
+                output += "Message: " + result.permissionCheck.message + "\n";
+            }
+        }
+        
         if (result.testResults) {
-            output += "\nTest Details:\n";
-            output += "  Quick Test (100ms timeout): " + 
+            output += "\n--- Connection Test Details ---\n";
+            output += "Quick Test (100ms timeout): " + 
                      (result.testResults.quick.success ? "SUCCESS" : "FAILED") + 
                      " in " + result.testResults.quick.duration + "ms\n";
-            output += "  Normal Test (3000ms timeout): " + 
+            output += "Normal Test (3000ms timeout): " + 
                      (result.testResults.normal.success ? "SUCCESS" : "FAILED") + 
                      " in " + result.testResults.normal.duration + "ms\n";
         }
@@ -501,6 +514,41 @@ function funPrivateNetworkCallback(result) {
             output += "Status: Private Network Access may be required\n";
         } else {
             output += "Status: Private Network Access not required (localhost or HTTP)\n";
+        }
+        
+        output += "\nFull Result Object:\n";
+        output += JSON.stringify(result, null, 2);
+        
+        debugResult(output);
+    }
+}
+
+function funLocalNetworkPermissionCallback(result) {
+    if(debugTextAreaName != null) {
+        var output = "=== LOCAL NETWORK PERMISSION CHECK ===\n";
+        output += "API Supported: " + result.supported + "\n";
+        
+        if (result.state) {
+            output += "Permission State: " + result.state + "\n";
+            output += "Granted: " + (result.details && result.details.granted) + "\n";
+            output += "Denied: " + (result.details && result.details.denied) + "\n";
+            output += "Prompt: " + (result.details && result.details.prompt) + "\n";
+            output += "\nMessage: " + result.message + "\n";
+            
+            if (result.state === 'denied') {
+                output += "\n⚠️  WARNING: Local network access is DENIED!\n";
+                output += "This will prevent access to localhost servers.\n";
+            } else if (result.state === 'granted') {
+                output += "\n✓ Local network access is GRANTED.\n";
+            } else if (result.state === 'prompt') {
+                output += "\nℹ️  Browser will prompt for permission when needed.\n";
+            }
+        } else if (result.error) {
+            output += "Error: " + result.message + "\n";
+            output += "Details: " + result.details + "\n";
+        } else {
+            output += "Message: " + result.message + "\n";
+            output += "Details: " + result.details + "\n";
         }
         
         output += "\nFull Result Object:\n";

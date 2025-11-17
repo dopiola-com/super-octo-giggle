@@ -93,7 +93,8 @@
                                             {name:"sms_code_no", sampleValue:"9"}
                                         ]},
             {name:"testConnectionStatus"},
-            {name:"checkPrivateNetworkAccess"}
+            {name:"checkPrivateNetworkAccess"},
+            {name:"checkLocalNetworkPermission"}
         ];
 
         window.onload = function() {
@@ -222,6 +223,10 @@
                             else if(CCPFunctions[i].name == "checkPrivateNetworkAccess")
                             {
                                 functionCall = "funPrivateNetworkCallback(CCPPekaoInstance.checkPrivateNetworkAccess());";
+                            }
+                            else if(CCPFunctions[i].name == "checkLocalNetworkPermission")
+                            {
+                                functionCall = "ccp_checkLocalNetworkPermission(function(result) { funLocalNetworkPermissionCallback(result); });";
                             }
                             else
                             {
